@@ -2,6 +2,8 @@
 
 De código a producción con GitHub, Jenkins, Docker y Docker Hub sobre el servidor 10.0.0.238.
 
+📄 **Diapositivas en PDF:** [Presentacion-DevOps-app1.pdf](Presentacion-DevOps-app1.pdf)
+
 ![Esquema del flujo DevOps](Esquema.png)
 
 ---
