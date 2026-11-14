@@ -1,11 +1,13 @@
 // Pipeline multibranch de app1
 //  - Ramas feature/* y pull requests: construye la imagen y la prueba (no despliega)
-//  - Rama main (después de aprobar el PR): versiona, despliega en 10.0.0.238 y crea el tag vX.Y.Z en GitHub
+//  - Rama main (después de aprobar el PR): versiona, publica la imagen en Docker Hub,
+//    despliega en 10.0.0.238 y crea el tag vX.Y.Z en GitHub
 pipeline {
     agent any
 
     environment {
         IMAGEN     = 'app1'
+        DOCKERHUB  = 'vacaerror/app1'
         CONTENEDOR = 'app1'
         PUERTO     = '3000'
     }
@@ -67,14 +69,33 @@ pipeline {
             }
         }
 
+        stage('Publicar en Docker Hub') {
+            when { branch 'main' }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub',
+                        usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+                    sh '''
+                        echo "$DH_TOKEN" | docker login -u "$DH_USER" --password-stdin
+                        docker tag ${IMAGEN}:${VERSION} ${DOCKERHUB}:${VERSION}
+                        docker tag ${IMAGEN}:${VERSION} ${DOCKERHUB}:latest
+                        docker push ${DOCKERHUB}:${VERSION}
+                        docker push ${DOCKERHUB}:latest
+                        echo "Publicada https://hub.docker.com/r/${DOCKERHUB}/tags (${VERSION} y latest)"
+                    '''
+                }
+            }
+            post {
+                always { sh 'docker logout || true' }
+            }
+        }
+
         stage('Desplegar en 10.0.0.238') {
             when { branch 'main' }
             steps {
                 sh '''
-                    docker tag ${IMAGEN}:${VERSION} ${IMAGEN}:latest
                     docker rm -f ${CONTENEDOR} 2>/dev/null || true
                     docker run -d --name ${CONTENEDOR} --restart unless-stopped \
-                        -p ${PUERTO}:3000 ${IMAGEN}:${VERSION}
+                        -p ${PUERTO}:3000 ${DOCKERHUB}:${VERSION}
                     for i in $(seq 1 10); do
                         if curl -fs http://localhost:${PUERTO}/ > /dev/null; then
                             echo "v${VERSION} disponible en http://10.0.0.238:${PUERTO}"

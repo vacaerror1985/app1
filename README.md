@@ -19,10 +19,12 @@ Jenkins revisa GitHub cada 2 minutos.
 
 ## Qué hace Jenkins
 
-| Rama | Construye imagen | Prueba | Despliega | Crea tag |
-|---|---|---|---|---|
-| `feature/*` y Pull Requests | ✔ | ✔ | — | — |
-| `main` | ✔ | ✔ | ✔ en 10.0.0.238:3000 | ✔ `vX.Y.N` |
+| Rama | Construye imagen | Prueba | Publica en Docker Hub | Despliega | Crea tag |
+|---|---|---|---|---|---|
+| `feature/*` y Pull Requests | ✔ | ✔ | — | — | — |
+| `main` | ✔ | ✔ | ✔ `vacaerror/app1:X.Y.N` y `latest` | ✔ en 10.0.0.238:3000 | ✔ `vX.Y.N` |
+
+Imágenes publicadas: https://hub.docker.com/r/vacaerror/app1/tags
 
 ## Versiones
 
