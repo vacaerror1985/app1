@@ -64,6 +64,10 @@ app.get('/', (req, res) => {
   res.send('Mi segunda  version de la aplicación Node.js con Express de Pascual Bravo 2026 Son muy Tesos');
 });
 
+app.get('/api/salud', (req, res) => {
+  res.json({ estado: 'ok', version: require('./package.json').version, fecha: new Date().toISOString() });
+});
+
 app.get('/api/usuarios', (req, res) => {
   res.json([
     { id: 1, nombre: 'Carlos' },
