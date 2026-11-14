@@ -2,6 +2,10 @@
 
 Aplicación Node.js + Express desplegada con Jenkins y Docker en http://10.0.0.238:3000
 
+![Esquema del flujo DevOps](docs/Esquema.png)
+
+📘 **Presentación del flujo completo:** [docs/PRESENTACION.md](docs/PRESENTACION.md): qué se construyó, qué falta, ambientes QA y producción, y cómo llevarlo a Kubernetes (ACR / EKS).
+
 ## Flujo de trabajo
 
 La rama `main` está protegida: los cambios solo entran por Pull Request y después de que Jenkins apruebe el build.
